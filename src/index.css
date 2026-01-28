@@ -33,7 +33,7 @@ body {
 /* HEADER */
 .header {
   height: 64px;
-  padding: 0 24px;
+  padding: 0px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -58,35 +58,53 @@ body {
 .upload-btn:hover {
   background: #2a2a2a;
 }
-.center{
+
+.center {
   display: flex;
   justify-content: center;
   margin-top: 24px;
 }
 
-/* GRID */
+/* ===================== */
+/* GRID (FIXED & RESPONSIVE) */
+/* ===================== */
+
 .grid {
-  
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 🔥 3 columns only */
-  gap: 0;           /* ❌ no spacing */
-  padding: 0;       /* ❌ no outer spacing */
-  width: 600px;  /* 🔥 fixed width */
-
+  grid-template-columns: repeat(3, 1fr); /* ALWAYS 3 columns */
+  gap: 2px;
+  width: 100%;
+  max-width: 604px;
+  margin: 0 auto;
 }
-
 
 .grid img {
-  height: 200px;
-  width: 200px;
+  width: 100%;
+  aspect-ratio: 1 / 1; /* square images */
+  object-fit: cover;
+  display: block;
 }
+
+/* Small screens */
+@media (max-width: 402px) {
+  .grid {
+    max-width: 360px; /* shrink grid to fit 3 images */
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 360px) {
+  .grid {
+    max-width: 330px;
+  }
+}
+
 .card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-
 
 .empty {
   grid-column: 1 / -1;
