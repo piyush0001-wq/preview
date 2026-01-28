@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
-import PhotoGrid from "./components/PhotoGrid";
 import Gallery from "./Gallery";
 
 import { db, storage } from "./firebase";
