@@ -1,5 +1,3 @@
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import PhotoGrid from "./components/PhotoGrid";
@@ -19,29 +17,10 @@ import {
   getDownloadURL
 } from "firebase/storage";
 
-const auth = getAuth();
-
-
 function App() {
   const [photos, setPhotos] = useState([]);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
-    const [authReady, setAuthReady] = useState(false);
-
-
-    useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        signInAnonymously(auth)
-          .then(() => setAuthReady(true))
-          .catch((err) => console.error("Auth error:", err));
-      } else {
-        setAuthReady(true);
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   // 🔽 Fetch images
   const fetchPhotos = async () => {
