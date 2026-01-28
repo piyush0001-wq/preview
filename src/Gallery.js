@@ -15,7 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, writeBatch } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import { db, storage } from "./firebase";
 
@@ -77,7 +77,17 @@ const Gallery = ({ images, setImages }) => {
       setImages((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
-        return arrayMove(items, oldIndex, newIndex);
+        const newItems = arrayMove(items, oldIndex, newIndex);
+
+        // Save the new order to Firestore
+        const batch = writeBatch(db);
+        newItems.forEach((item, index) => {
+          const docRef = doc(db, "photos", item.id);
+          batch.update(docRef, { order: index });
+        });
+        batch.commit().catch(console.error);
+
+        return newItems;
       });
     }
 

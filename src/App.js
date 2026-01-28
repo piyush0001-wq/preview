@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
-import PhotoGrid from "./components/PhotoGrid";
 import Gallery from "./Gallery";
 
 import { db, storage } from "./firebase";
@@ -25,15 +24,22 @@ function App() {
 
   // 🔽 Fetch images
   const fetchPhotos = async () => {
-    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "photos"));
     const snapshot = await getDocs(q);
 
-    setPhotos(
-      snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
-    );
+    const items = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    // Sort by 'order' ascending, then by 'createdAt' descending (for new items with order 0)
+    items.sort((a, b) => {
+      const orderDiff = (a.order ?? 0) - (b.order ?? 0);
+      if (orderDiff !== 0) return orderDiff;
+      return (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0);
+    });
+
+    setPhotos(items);
   };
 
   useEffect(() => {
@@ -72,7 +78,8 @@ function App() {
             size: file.size,
             type: file.type,
             url,
-            createdAt: serverTimestamp()
+            createdAt: serverTimestamp(),
+            order: 0 // New images appear at the top (sharing order 0 until reordered)
           });
 
           setUploading(false);
@@ -111,7 +118,7 @@ function App() {
           </p>
         </div>
       )}
-      <p style={{ textAlign: "center", marginTop: "10px" }}>Upload your beautiful photos!</p>
+      <p style={{ textAlign: "center", margin: "15px", fontFamily: "sans-serif"}}>Upload your beautiful photos!</p>
       {/* <PhotoGrid photos={photos} /> */}
       <Gallery images={photos} setImages={setPhotos} />
     </>
