@@ -1,5 +1,3 @@
-import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
-
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import PhotoGrid from "./components/PhotoGrid";
@@ -18,16 +16,23 @@ import {
   uploadBytesResumable,
   getDownloadURL
 } from "firebase/storage";
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "firebase/auth";
 
+// 🔐 Initialize Firebase Auth
 const auth = getAuth();
-
 
 function App() {
   const [photos, setPhotos] = useState([]);
   const [progress, setProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
 
-    useEffect(() => {
+  // 🔐 Ensure user is authenticated (anonymous)
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         signInAnonymously(auth)
@@ -60,6 +65,11 @@ function App() {
 
   // 🔼 Upload with progress
   const handleUpload = async (files) => {
+    if (!authReady) {
+      console.log("Auth not ready yet");
+      return;
+    }
+
     for (const file of files) {
       setUploading(true);
       setProgress(0);
@@ -129,7 +139,11 @@ function App() {
           </p>
         </div>
       )}
-      <p style={{ textAlign: "center", marginTop: "10px" }}>Upload your beautiful photos!</p>
+
+      <p style={{ textAlign: "center", marginTop: "10px" }}>
+        Upload your beautiful photos!
+      </p>
+
       <PhotoGrid photos={photos} />
     </>
   );
