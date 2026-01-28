@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import PhotoGrid from "./components/PhotoGrid";
+import Gallery from "./Gallery";
 
 import { db, storage } from "./firebase";
 import {
@@ -111,7 +112,8 @@ function App() {
         </div>
       )}
       <p style={{ textAlign: "center", marginTop: "10px" }}>Upload your beautiful photos!</p>
-      <PhotoGrid photos={photos} />
+      {/* <PhotoGrid photos={photos} /> */}
+      <Gallery images={photos} setImages={setPhotos} />
     </>
   );
 }
