@@ -8,7 +8,6 @@ import {
   addDoc,
   getDocs,
   query,
-  orderBy,
   serverTimestamp
 } from "firebase/firestore";
 import {
@@ -16,6 +15,7 @@ import {
   uploadBytesResumable,
   getDownloadURL
 } from "firebase/storage";
+import Footer from "./components/Footer";
 
 function App() {
   const [photos, setPhotos] = useState([]);
@@ -121,6 +121,7 @@ function App() {
       <p style={{ textAlign: "center", margin: "15px", fontFamily: "sans-serif"}}>Upload your beautiful photos!</p>
       {/* <PhotoGrid photos={photos} /> */}
       <Gallery images={photos} setImages={setPhotos} />
+      <Footer />
     </>
   );
 }
